@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b0f14" />
+  <title>Painel EVO | Autobrás</title>
+  <style>
+    :root{
+      --bg:#070a0f;
+      --panel:#0e141d;
+      --panel2:#121a25;
+      --text:#f4f7fb;
+      --muted:#8e9aab;
+      --blue:#2d9fe6;
+      --orange:#ff6500;
+      --line:rgba(255,255,255,.08);
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(45,159,230,.10), transparent 28%),
+        radial-gradient(circle at 85% 10%, rgba(255,101,0,.08), transparent 26%),
+        linear-gradient(180deg,#070a0f 0%,#0a0e14 100%);
+    }
+    button,a{font:inherit}
+    .shell{width:min(1180px,calc(100% - 28px));margin:auto;padding:34px 0 28px}
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:20px;
+      padding:16px 18px;border:1px solid var(--line);background:rgba(14,20,29,.78);
+      backdrop-filter:blur(14px);border-radius:24px;box-shadow:var(--shadow)
+    }
+    .brand{display:flex;align-items:center;gap:14px;min-width:0}
+    .logo-stack{display:flex;align-items:center}
+    .logo-circle{
+      width:62px;height:62px;border-radius:50%;overflow:hidden;display:grid;place-items:center;
+      background:#0a0d12;border:1px solid rgba(255,255,255,.12);box-shadow:0 8px 22px rgba(0,0,0,.28)
+    }
+    .logo-circle + .logo-circle{margin-left:-12px}
+    .logo-circle img{width:100%;height:100%;object-fit:contain;padding:7px;background:#0a0d12}
+    .logo-circle.autobras img{padding:5px;background:#fff}
+    .brand-copy h1{font-size:1.1rem;margin:0 0 3px;letter-spacing:.2px}
+    .brand-copy p{margin:0;color:var(--muted);font-size:.87rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .status{display:flex;align-items:center;gap:8px;color:#b9c5d4;font-size:.82rem}
+    .dot{width:9px;height:9px;border-radius:50%;background:#37d67a;box-shadow:0 0 0 5px rgba(55,214,122,.10)}
+
+    .hero{padding:58px 6px 30px;max-width:780px}
+    .eyebrow{font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;color:#7ebee8;font-weight:800;margin-bottom:12px}
+    .hero h2{margin:0;font-size:clamp(2.15rem,5vw,4.25rem);line-height:1.02;letter-spacing:-.045em}
+    .hero h2 span{background:linear-gradient(90deg,var(--blue),#74c9ff 52%,var(--orange));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .hero p{margin:18px 0 0;color:var(--muted);font-size:1rem;line-height:1.7;max-width:650px}
+
+    .section-title{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:26px 0 14px}
+    .section-title h3{margin:0;font-size:1.05rem}
+    .section-title span{color:var(--muted);font-size:.8rem}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .card{
+      position:relative;overflow:hidden;min-height:236px;padding:20px;border:1px solid var(--line);border-radius:24px;
+      background:linear-gradient(145deg,rgba(18,26,37,.96),rgba(10,15,22,.96));box-shadow:var(--shadow);
+      transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease
+    }
+    .card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.17);box-shadow:0 28px 70px rgba(0,0,0,.45)}
+    .card::after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;right:-85px;top:-90px;background:rgba(45,159,230,.08)}
+    .card.locked::after{background:rgba(255,101,0,.08)}
+    .icon{
+      width:48px;height:48px;border-radius:15px;display:grid;place-items:center;margin-bottom:28px;
+      background:rgba(45,159,230,.10);border:1px solid rgba(45,159,230,.18);font-size:1.25rem
+    }
+    .locked .icon{background:rgba(255,101,0,.10);border-color:rgba(255,101,0,.18)}
+    .card h4{font-size:1.12rem;margin:0 0 8px}
+    .card p{font-size:.9rem;line-height:1.55;margin:0;color:var(--muted);min-height:44px}
+    .actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:26px}
+    .badge{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;padding:7px 9px;border-radius:999px;color:#a9d9f7;background:rgba(45,159,230,.10);border:1px solid rgba(45,159,230,.18)}
+    .locked .badge{color:#ffc197;background:rgba(255,101,0,.10);border-color:rgba(255,101,0,.18)}
+    .open-btn{
+      border:0;color:white;background:#1b2532;padding:10px 13px;border-radius:12px;cursor:pointer;font-weight:800;
+      transition:background .2s ease,transform .2s ease
+    }
+    .open-btn:hover{background:#253348;transform:translateY(-1px)}
+
+    .dev{
+      margin-top:26px;border:1px solid var(--line);border-radius:24px;background:rgba(14,20,29,.78);padding:20px;box-shadow:var(--shadow)
+    }
+    .dev-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+    .dev h3{margin:0;font-size:1rem}.dev small{color:var(--muted)}
+    .repo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .repo{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;text-decoration:none;color:var(--text);
+      padding:14px;border:1px solid var(--line);border-radius:16px;background:#0b1119;transition:.2s ease
+    }
+    .repo:hover{border-color:rgba(255,255,255,.18);background:#101824}
+    .repo strong{font-size:.9rem}.repo span{color:var(--muted);font-size:.8rem}
+    footer{text-align:center;color:#687587;font-size:.76rem;padding:24px 0 4px}
+
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(2,5,9,.76);backdrop-filter:blur(10px);z-index:99}
+    .modal.show{display:flex}
+    .dialog{width:min(430px,100%);background:#0e141d;border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:0 30px 100px rgba(0,0,0,.55)}
+    .dialog-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+    .dialog h3{margin:0 0 6px}.dialog p{margin:0;color:var(--muted);font-size:.9rem;line-height:1.5}
+    .close{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:#111a25;color:white;cursor:pointer;font-size:1.1rem}
+    .field{margin-top:18px}
+    .field label{display:block;font-size:.78rem;color:#b9c5d4;margin:0 0 8px;font-weight:700}
+    .input-wrap{display:flex;gap:8px}
+    .field input{width:100%;border:1px solid var(--line);background:#080d13;color:white;border-radius:14px;padding:14px 15px;outline:none;font-size:1rem}
+    .field input:focus{border-color:rgba(45,159,230,.55);box-shadow:0 0 0 4px rgba(45,159,230,.08)}
+    .toggle{width:48px;border:1px solid var(--line);border-radius:14px;background:#111a25;color:#d7e0ea;cursor:pointer}
+    .error{display:none;color:#ff8d83;font-size:.8rem;margin-top:8px}
+    .error.show{display:block}
+    .submit{width:100%;margin-top:16px;border:0;border-radius:14px;padding:14px;background:linear-gradient(90deg,#258fd1,#32aaf2);color:white;font-weight:900;cursor:pointer}
+
+    @media(max-width:860px){.grid,.repo-grid{grid-template-columns:1fr}.card{min-height:auto}.hero{padding-top:42px}.status{display:none}}
+    @media(max-width:520px){.shell{width:min(100% - 18px,1180px);padding-top:10px}.topbar{border-radius:18px;padding:12px}.logo-circle{width:50px;height:50px}.brand-copy p{font-size:.76rem}.hero{padding:36px 4px 18px}.hero p{font-size:.92rem}.card,.dev{border-radius:19px}.section-title span{display:none}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo-stack" aria-label="Logos EVO e Autobrás">
+          <div class="logo-circle"><img src="assets/evo.png" alt="EVO"></div>
+          <div class="logo-circle autobras"><img src="assets/autobras.png" alt="Autobrás"></div>
+        </div>
+        <div class="brand-copy">
+          <h1>EVO × Autobrás</h1>
+          <p>Central de aplicações e indicadores</p>
+        </div>
+      </div>
+      <div class="status"><span class="dot"></span> Painel disponível</div>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">Portal Corporativo</div>
+      <h2>Um único painel para acessar suas <span>aplicações.</span></h2>
+      <p>Escolha abaixo o módulo desejado. Os acessos Comercial e Financeiro exigem autenticação; o módulo de Inadimplência possui acesso direto.</p>
+    </section>
+
+    <div class="section-title">
+      <h3>Aplicações</h3>
+      <span>3 módulos disponíveis</span>
+    </div>
+
+    <section class="grid">
+      <article class="card locked">
+        <div class="icon">📊</div>
+        <h4>Comercial Autobrás</h4>
+        <p>Indicadores e acompanhamento da operação comercial.</p>
+        <div class="actions"><span class="badge">Protegido</span><button class="open-btn" data-url="https://autobrascomercial.streamlit.app/" data-name="Comercial Autobrás">Acessar</button></div>
+      </article>
+
+      <article class="card locked">
+        <div class="icon">💳</div>
+        <h4>Financeiro ATB</h4>
+        <p>Visão financeira, controles e indicadores gerenciais.</p>
+        <div class="actions"><span class="badge">Protegido</span><button class="open-btn" data-url="https://financeiroatb.streamlit.app/" data-name="Financeiro ATB">Acessar</button></div>
+      </article>
+
+      <article class="card">
+        <div class="icon">📉</div>
+        <h4>Inadimplência ATB</h4>
+        <p>Acompanhamento de inadimplência e carteira em aberto.</p>
+        <div class="actions"><span class="badge">Acesso direto</span><button class="open-btn direct" data-url="https://atbinadimplencia.streamlit.app/">Acessar</button></div>
+      </article>
+    </section>
+
+    <section class="dev">
+      <div class="dev-head"><div><h3>Área do desenvolvedor</h3><small>Repositórios dos projetos no GitHub</small></div></div>
+      <div class="repo-grid">
+        <a class="repo" href="https://github.com/samfc-netizen/comercialautobras" target="_blank" rel="noopener"><div><strong>Comercial Autobrás</strong><br><span>GitHub Repository</span></div><b>↗</b></a>
+        <a class="repo" href="https://github.com/samfc-netizen/FinanceiroATB" target="_blank" rel="noopener"><div><strong>Financeiro ATB</strong><br><span>GitHub Repository</span></div><b>↗</b></a>
+        <a class="repo" href="https://github.com/samfc-netizen/Inadimpl-nciaATB" target="_blank" rel="noopener"><div><strong>Inadimplência ATB</strong><br><span>GitHub Repository</span></div><b>↗</b></a>
+      </div>
+    </section>
+
+    <footer>EVO × Autobrás • Portal de acesso</footer>
+  </main>
+
+  <div class="modal" id="passwordModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="dialog">
+      <div class="dialog-top">
+        <div><h3 id="modalTitle">Acesso protegido</h3><p id="modalDescription">Digite a senha para continuar.</p></div>
+        <button class="close" id="closeModal" aria-label="Fechar">×</button>
+      </div>
+      <form id="passwordForm">
+        <div class="field">
+          <label for="passwordInput">Senha</label>
+          <div class="input-wrap">
+            <input id="passwordInput" type="password" autocomplete="current-password" placeholder="Digite a senha" required>
+            <button class="toggle" type="button" id="togglePassword" aria-label="Mostrar ou ocultar senha">👁</button>
+          </div>
+          <div class="error" id="passwordError">Senha incorreta. Tente novamente.</div>
+        </div>
+        <button class="submit" type="submit">Liberar acesso</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const ACCESS_PASSWORD = 'Evo@10.10';
+    const modal = document.getElementById('passwordModal');
+    const input = document.getElementById('passwordInput');
+    const form = document.getElementById('passwordForm');
+    const error = document.getElementById('passwordError');
+    const title = document.getElementById('modalTitle');
+    const description = document.getElementById('modalDescription');
+    let pendingUrl = '';
+
+    document.querySelectorAll('.open-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const url = btn.dataset.url;
+        if (btn.classList.contains('direct')) {
+          window.open(url, '_blank', 'noopener');
+          return;
+        }
+        pendingUrl = url;
+        title.textContent = btn.dataset.name || 'Acesso protegido';
+        description.textContent = 'Digite a senha para abrir este módulo.';
+        input.value = '';
+        error.classList.remove('show');
+        modal.classList.add('show');
+        setTimeout(() => input.focus(), 80);
+      });
+    });
+
+    function closeModal(){ modal.classList.remove('show'); pendingUrl=''; }
+    document.getElementById('closeModal').addEventListener('click', closeModal);
+    modal.addEventListener('click', e => { if(e.target === modal) closeModal(); });
+    document.addEventListener('keydown', e => { if(e.key === 'Escape' && modal.classList.contains('show')) closeModal(); });
+
+    document.getElementById('togglePassword').addEventListener('click', () => {
+      input.type = input.type === 'password' ? 'text' : 'password';
+    });
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      if (input.value === ACCESS_PASSWORD) {
+        const url = pendingUrl;
+        closeModal();
+        window.open(url, '_blank', 'noopener');
+      } else {
+        error.classList.add('show');
+        input.select();
+      }
+    });
+  </script>
+</body>
+</html>
